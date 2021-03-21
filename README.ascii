@@ -1,0 +1,6 @@
+= Uruchamianie
+
+Uruchomienie z cmd (a może i z PowerShella) wymaga zadeklarowania kodowanie jako UTF-8, inaczej `sbt` się gubi:
+
+  chcp 65001
+
