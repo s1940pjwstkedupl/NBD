@@ -90,6 +90,7 @@ object Main extends App {
   // Zadanie 9 - zwiększenie o 1
   def zad9(l : List[Int]) : List[Int] = l map (1 + _)
   def zad10(l : List[Double]) : List[Double] = l.filter( x => x >= -5 && x <= 12).map(_.abs)
+  def zad10a(l : List[Double]) : List[Double] = l.filter(_ >= -5).filter(_ <= 12).map(_.abs)
 
   println("Zadanie 1a:\n" + join1a(dni));
   println("Zadanie 1b, metoda 1:\n" + join1bm1(dni));
