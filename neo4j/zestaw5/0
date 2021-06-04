@@ -1,0 +1,16 @@
+1.	Wszystkie filmy // match (m:Movie) return m
+2.	Wszystkie filmy, w których grał Hugo Weaving   // match (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m) RETURN m, h;
+3.	Reżyserzy filmów, w których grał Hugo Weaving  // match (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:DIRECTED]-(r:Person) RETURN  r;
+4.	Wszystkie osoby, z którymi Hugo Weaving grał w tych samych filmach //match (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:ACTED_IN]-(a:Person) WHERE a <> h RETURN  a; // WHERE a <> h chyba nie potrzebne, ale kto to tam wie
+5.	Wszystkie filmy osób, które grały w Matrix // match (a:Person)-[:ACTED_IN]->(m:Movie {title:"The Matrix"}) RETURN a,m;
+6.	Listę aktorów (aktor = osoba, która grała przynajmniej w jednym filmie) wraz z ilością filmów, w których grali // match (a:Person)-[:ACTED_IN]->(m:Movie) RETURN a.name,count(m)
+7.	Listę osób, które napisały scenariusz filmu, które wyreżyserowały wraz z tytułami takich filmów (koniunkcja – ten sam autor scenariusza i reżyser) //match (d:Person)-[:DIRECTED]->(m:Movie)<-[:WROTE]-(w:Person) WHERE d = w RETURN d.name, m.title
+8.	Listę filmów, w których grał zarówno Hugo Weaving jak i Keanu Reeves // match(d:Person{name:'Hugo Weaving'})-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(d2:Person{name:'Keanu Reeves'}) return m.title
+9.	(za 0.2pkt) Zestaw zapytań powodujących uzupełnienie bazy danych o film Captain America: The First Avenger wraz z uzupełnieniem informacji o reżyserze, scenarzystach i odtwórcach głównych ról (w oparciu o skrócone informacje z IMDB - http://www.imdb.com/title/tt0458339/) + zapytanie pokazujące dodany do bazy film wraz odtwórcami głównych ról, scenarzystą i reżyserem. Plik SVG ma pokazywać wynik ostatniego zapytania.  
+
+
+create(CapAm:Movie {title:"Captain America: The First Avenger", released: 2011, tagline:"When patriots become heroes "}),  (SamuLJ:Person {name:'Samuel L. Jackson', born:1948}), (ChEvans:Person{name:'Chris Evans', born:1981}), (JoeJo:Person {name: 'Joe Johnston', born: 1950}), (ChriMark:Person {name:'Christopher Markus', born: 1970}), (SteMac:Person {name:'Stephen McFeely', born: 1969}), (SamuLJ)-[:ACTED_IN {roles:['Nick Fury']}]->(CapAm), (ChEvans)-[:ACTED_IN { roles:['Captain America', 'Steve Rogers']}]->(CapAm), (JoeJo)-[:DIRECTED]->(CapAm), (ChriMark)-[:WROTE]->(CapAm), (SteMac)-[:WROTE]->(CapAm);
+match (p:Person), (m:Movie) where p.name="Hugo Weaving" and m.title = "Captain America: The First Avenger" create (p)-[:ACTED_IN {roles:['Johann Schmidt', 'Red Skull']}]->(m);
+
+match (m:Movie{title:"Captain America: The First Avenger"})<-[r:WROTE|DIRECTED|ACTED_IN]-(p:Person) return m, r, p
+

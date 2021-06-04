@@ -1,0 +1,29 @@
+1. match (m:Movie) return m
+2. match (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m) RETURN m, h;
+3. match (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:DIRECTED]-(r:Person) RETURN  r;
+4. match (h:Person {name:"Hugo Weaving"})-[:ACTED_IN]->(m)<-[:ACTED_IN]-(a:Person) WHERE a <> h RETURN  a; // WHERE a <> h chyba nie potrzebne, ale kto to tam wie
+5. match (a:Person)-[:ACTED_IN]->(m:Movie {title:"The Matrix"}) RETURN a,m;
+6. match (a:Person)-[:ACTED_IN]->(m:Movie) RETURN a.name,count(m)
+7. match (d:Person)-[:DIRECTED]->(m:Movie)<-[:WROTE]-(w:Person) WHERE d = w RETURN d.name, m.title
+8. match(d:Person{name:'Hugo Weaving'})-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(d2:Person{name:'Keanu Reeves'}) return m.title
+9. Prawdopodobnie dodanie danych wykonalne w jednym zapytaniu, natomiast nie znalazłem prostej metody na kasowanie bazy danych i jej ponowne wczytanie bez restartu kontenera, wobec czego jest na dwóch zapytaniach, plus końcowe odpytanie:
+// Dodanie filmu, scenarzysty i reżysera:
+create (CapAm:Movie {title:"Captain America: The First Avenger", released: 2011, tagline:"When patriots become heroes "}),
+    (SamuLJ:Person {name:'Samuel L. Jackson', born:1948}),
+    (ChEvans:Person{name:'Chris Evans', born:1981}),
+    (JoeJo:Person {name: 'Joe Johnston', born: 1950}),
+    (ChriMark:Person {name:'Christopher Markus', born: 1970}),
+    (SteMac:Person {name:'Stephen McFeely', born: 1969}),
+    (SamuLJ)-[:ACTED_IN {roles:['Nick Fury']}]->(CapAm),
+    (ChEvans)-[:ACTED_IN { roles:['Captain America', 'Steve Rogers']}]->(CapAm),
+    (JoeJo)-[:DIRECTED]->(CapAm),
+    (ChriMark)-[:WROTE]->(CapAm),
+    (SteMac)-[:WROTE]->(CapAm);
+// Dodanie istniejącego Hugona Splatającego jako aktora z dwoma rolami do filmu:
+match (p:Person), (m:Movie)
+    where p.name="Hugo Weaving" and m.title = "Captain America: The First Avenger"
+    create (p)-[:ACTED_IN {roles:['Johann Schmidt', 'Red Skull']}]->(m);
+
+// wyciągnięcie danych z powrotem:
+match (m:Movie{title:"Captain America: The First Avenger"})<-[r:WROTE|DIRECTED|ACTED_IN]-(p:Person) return m, r, p
+
