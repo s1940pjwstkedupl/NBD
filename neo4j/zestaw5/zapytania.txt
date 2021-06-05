@@ -7,6 +7,7 @@
 7. match (d:Person)-[:DIRECTED]->(m:Movie)<-[:WROTE]-(w:Person) WHERE d = w RETURN d.name, m.title
 8. match(d:Person{name:'Hugo Weaving'})-[:ACTED_IN]->(m:Movie)<-[:ACTED_IN]-(d2:Person{name:'Keanu Reeves'}) return m.title
 9. Prawdopodobnie dodanie danych wykonalne w jednym zapytaniu, natomiast nie znalazłem prostej metody na kasowanie bazy danych i jej ponowne wczytanie bez restartu kontenera, wobec czego jest na dwóch zapytaniach, plus końcowe odpytanie:
+
 // Dodanie filmu, scenarzysty i reżysera:
 create (CapAm:Movie {title:"Captain America: The First Avenger", released: 2011, tagline:"When patriots become heroes "}),
     (SamuLJ:Person {name:'Samuel L. Jackson', born:1948}),
@@ -19,6 +20,7 @@ create (CapAm:Movie {title:"Captain America: The First Avenger", released: 2011,
     (JoeJo)-[:DIRECTED]->(CapAm),
     (ChriMark)-[:WROTE]->(CapAm),
     (SteMac)-[:WROTE]->(CapAm);
+
 // Dodanie istniejącego Hugona Splatającego jako aktora z dwoma rolami do filmu:
 match (p:Person), (m:Movie)
     where p.name="Hugo Weaving" and m.title = "Captain America: The First Avenger"
