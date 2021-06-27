@@ -1,0 +1,61 @@
+1. match (from:town{name:'Darjeeling'}),(to:peak{name:'Sandakphu'}) WITH from,to MATCH path= ShortestPath((from)-[*]-(to)) return path
+
+2. match (from:town{name:'Darjeeling'}),(to:peak{name:'Sandakphu'}), path= allShortestPaths((from)-[*]-(to)) where all(r IN relationships(path) WHERE r.winter="true") return path
+albo:
+match path= allShortestPaths((from:town{name:'Darjeeling'})-[*..7]-(to:peak{name:'Sandakphu'})) where all(r IN relationships(path) WHERE r.winter="true") return path
+
+3. match p=(from:town{name:'Darjeeling'})-[*]->(to:peak{name:'Sandakphu'}) WITH relationships(p) as r return r, reduce(s = 0, x IN r | s + x.distance) as dist order by dist asc
+
+// Zakładam, że zapytania są 4, a nie że zapytanie 3 składa się z dwóch oddzielnych zadań. Natomiast później numeracja jest ciągnięta od 4, więc przyznaję miejsce 3.5.
+// Możliwe, że chodzi o zapytanie uwzględniające jedno i drugie, natomiast nie składa mi się to w jedno zapytanie, no ni pyty.
+// Znajdź wszystkie miejsca do których można dotrzeć przy pomocy roweru (twowheeler) z Darjeeling latem
+3.5. match p = (root:town{name:'Darjeeling'})-[:twowheeler*]->(to) with *, relationships(p) as r where all(x in r where x.summer = 'true') return distinct to // brak wyników
+
+4. match (f:Flight)-[:ORIGIN]->(a:Airport) return a, count(f) as cnt order by cnt desc
+
+
+5.
+// tworzenie połączeń z większą ilością danych
+MATCH
+	(a:Airport)<-[:ORIGIN]->(f:Flight)-[:DESTINATION]->(b:Airport)
+MATCH
+	(f:Flight)<-[]-(t:Ticket)
+MERGE (a)-[:CONN {class: t.class, price: t.price, date:f.date, dist:f.distance}]->(b);
+
+MATCH p = (r:Airport{name:'LAX'})-[c:CONN*1..3]->(d) WITH p as p, reduce (s = 0, x IN relationships(p) | s + x.price) AS price WHERE price <= 3000 RETURN p, price ORDER BY price desc;
+// dla wartości większych niż 1..3 moja instancja dockera dokonywała żywota westchnąwszy jedynie z żalem
+
+// pozwoliłem sobie także na spakowanie pliku wynikowego w formacie JSON, ponieważ był jednak zbyt duży
+
+6. // Uszereguj połączenia, którymi można dotrzeć z Los Angeles (LAX) do Dayton (DAY) według ceny biletów 
+
+// Zakładając, że powyższe relacje CONN istnieją:
+
+MATCH p = (r:Airport{name:'LAX'})-[c:CONN*1..3]->(d:Airport{name:'DAY'}) WITH *, reduce (s = 0, x IN relationships(p) | s + x.price) as price return p, price ORDER BY price desc;
+
+// nie można nic wyeksportować, ponieważ nie ma żadnych wyników.
+
+7. // Znajdź najtańsze połączenie z Los Angeles (LAX) do Dayton (DAY)  
+
+match p = (r:airport{name:'lax'})-[c:conn*1..3]->(d:airport{name:'day'}) with *, reduce (s = 0, x in relationships(p) | s + x.price) as price return p, price order by price asc limit 1;
+
+// nie można nic wyeksportować, ponieważ nie ma żadnych wyników.
+
+8. // Znajdź najtańsze połączenie z Los Angeles (LAX) do Dayton (DAY) w klasie biznes
+
+match p= (r:Airport{name:'LAX'})-[c:CONN*1..3{class:'business'}]->(d:Airport{name:'DAY'}) WITH p as p, reduce(s = 0, x IN relationships(p) | s + x.price) as price return p, price order by price asc limit 1
+
+// nie można nic wyeksportować, ponieważ nie ma żadnych wyników
+
+9. // Uszereguj linie lotnicze według ilości miast, pomiędzy którymi oferują połączenia (unikalnych miast biorących udział w relacjach :ORIGIN i :DESTINATION węzłów typu Flight obsługiwanych przez daną linię) 
+
+match (a:Airport)<-[:ORIGIN]-(f:Flight) match (b:Airport)<-[:DESTINATION]-(f:Flight) UNWIND [a, b] as c return f.airline, count(distinct c.name) order by count(distinct c.name) desc
+
+10. // Znajdź najtańszą trasę łączącą 3 różne porty lotnicze
+
+match p = (a:Airport)-[:CONN]->(b:Airport)-[:CONN]->(c:Airport) WITH *, p as p, reduce (s = 0, x in relationships(p) | s + x.price) as price WHERE a <> b and b <> c and c <> a return p, price order by price asc limit 1
+
+// ALBO:
+
+match p = (a:Airport)-[:CONN*2..2]->(b:Airport) CALL { with p unwind nodes(p) as nn return collect(distinct nn) as ns} WITH *, reduce (s = 0, x in relationships(p) | s + x.price) as price where size(ns) = 3 return p, price order by price asc limit 1
+
