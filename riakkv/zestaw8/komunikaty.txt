@@ -1,0 +1,30 @@
+---------------------------
+Status: 201
+Headers: {'Vary': 'Accept-Encoding', 'Server': 'MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)', 'Location': '/buckets/s1940/keys/WkXIX7LrGaYAjfQLosugvatQPfF', 'Date': 'Sun, 27 Jun 2021 22:40:23 GMT', 'Content-Type': 'text/plain', 'Content-Length': '0', 'Content-Encoding': 'gzip'}
+
+Dokument zapisany jako: /buckets/s1940/keys/WkXIX7LrGaYAjfQLosugvatQPfF
+---------------------------
+Status: 200
+Headers: {'X-Riak-Vclock': 'a85hYGBgzGDKBVI8+xkWvlfjufYGyGbJYEpkzGNlCK/yvcWXBQA=', 'Vary': 'Accept-Encoding', 'Server': 'MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)', 'Link': '</buckets/s1940>; rel="up"', 'Last-Modified': 'Sun, 27 Jun 2021 22:40:23 GMT', 'ETag': '"7WRbunVsSQ778yd1iEIEqe"', 'Date': 'Sun, 27 Jun 2021 22:40:23 GMT', 'Content-Type': 'text/plain', 'Content-Length': '24', 'Content-Encoding': 'gzip'}
+
+Pobrany dokument: Text
+---------------------------
+Status: 204
+Headers: {'Vary': 'Accept-Encoding', 'Server': 'MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)', 'Date': 'Sun, 27 Jun 2021 22:40:23 GMT', 'Content-Type': 'text/plain', 'Content-Length': '0', 'Content-Encoding': 'gzip'}
+
+Zmodyfikowany dokument zosta³ zapisany
+---------------------------
+Status: 200
+Headers: {'X-Riak-Vclock': 'a85hYGBgzGDKBVI8+xkWvlfjufYGyGbJYEpkymNlCK/yvcWXBQA=', 'Vary': 'Accept-Encoding', 'Server': 'MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)', 'Link': '</buckets/s1940>; rel="up"', 'Last-Modified': 'Sun, 27 Jun 2021 22:40:23 GMT', 'ETag': '"1e9xLmtSBVhDEPKdTsiep1"', 'Date': 'Sun, 27 Jun 2021 22:40:23 GMT', 'Content-Type': 'text/plain', 'Content-Length': '38', 'Content-Encoding': 'gzip'}
+
+Pobrany dokument po modyfikacji: Text zmodyfikowany
+---------------------------
+Status: 204
+Headers: {'Vary': 'Accept-Encoding', 'Server': 'MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)', 'Date': 'Sun, 27 Jun 2021 22:40:23 GMT', 'Content-Type': 'text/plain', 'Content-Length': '0', 'Content-Encoding': 'gzip'}
+
+Wynik próby usuniêcia: 204
+---------------------------
+Status: 404
+Headers: {'X-Riak-Vclock': 'a85hYGBgzGDKBVI8+xkWvlfjufYGyGbJYEpkzmNlCK/yvcWXBQA=', 'X-Riak-Deleted': 'true', 'Server': 'MochiWeb/1.1 WebMachine/1.10.9 (cafe not found)', 'Date': 'Sun, 27 Jun 2021 22:40:23 GMT', 'Content-Type': 'text/plain', 'Content-Length': '10'}
+
+Wynik próby pobrania: 404
